@@ -1,4 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, url_for, redirect, request
+from werkzeug.security import generate_password_hash
+from models.user import User 
+import re
 
 
 users_blueprint = Blueprint('users',
@@ -13,7 +16,29 @@ def new():
 
 @users_blueprint.route('/', methods=['POST'])
 def create():
-    pass
+    username=request.form.get('username')
+    email=request.form.get('email')
+    password=request.form.get('password')
+    regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+
+    if len(password)<7:
+        errors="Password should be longer than 6 characters"
+        return render_template('users/new.html',errors=errors)
+
+    if not(any(x.isupper() for x in password) and any(x.islower() for x in password)) :
+        errors="Password should have both uppercase and lowercase characters"
+        return render_template('users/new.html', errors=errors)
+
+    if regex.search(password) == None:
+        errors="Password should have at least one special character"
+        return render_template('users/new.html', username=username ,errors=errors)
+        
+    else:
+        s= User(username=username, email=email, password=generate_password_hash(password))
+        if s.save():
+            return redirect(url_for('users.new', id=s.id))
+        else:
+            return render_template('users/new.html', username=username ,errors=s.errors)
 
 
 @users_blueprint.route('/<username>', methods=["GET"])
