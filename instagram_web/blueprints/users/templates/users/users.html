@@ -1,0 +1,18 @@
+{% extends "_layout.html" %}
+{% block content %}
+    {% for i in users %}
+        <div>
+            <h1>{{i.username}}</h1>
+
+            <img src="{{i.profile_image_url}}"  height="200" width="200" style="display:block"/>
+
+            {% for x in i.images %}
+                <img src="{{x.image_url}}"  height="200" width="200" style="display:inline-block; margin:10px"/>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endblock %}
+
+<!-- for i in User:
+ for x in i.images:
+  print(x) -->

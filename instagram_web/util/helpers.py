@@ -1,28 +1,28 @@
-# import boto3, botocore
-# from config import S3_KEY, S3_SECRET, S3_BUCKET
+import boto3, botocore
+from config import Config
 
-# s3 = boto3.client(
-#    "s3",
-#    aws_access_key_id=S3_KEY,
-#    aws_secret_access_key=S3_SECRET
-# )
+s3 = boto3.client(
+   "s3",
+   aws_access_key_id=Config.S3_KEY,
+   aws_secret_access_key=Config.S3_SECRET
+)
 
-# def upload_file_to_s3(file, bucket_name, acl="public-read"):
+def upload_file_to_s3(file, acl="public-read"):
 
-#     try:
+    try:
 
-#         s3.upload_fileobj(
-#             file,
-#             Config.S3_BUCKET,
-#             file.filename,
-#             ExtraArgs={
-#                 "ACL": acl,
-#                 "ContentType": file.content_type
-#             }
-#         )
-#         return "{}{}".format(app.config["S3_LOCATION"], file.filename)
+        s3.upload_fileobj(
+            file,
+            Config.S3_BUCKET,
+            file.filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type
+            }
+        )
+        return "{}{}".format(Config.S3_LOCATION, file.filename)
 
-#     except Exception as e:
-#         # This is a catch all exception, edit this part to fit your needs.
-#         print("Something Happened: ", e)
-#         return e
+    except Exception as e:
+        # This is a catch all exception, edit this part to fit your needs.
+        print("Something Happened: ", e)
+        return e

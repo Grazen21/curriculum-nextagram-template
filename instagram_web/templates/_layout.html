@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="shortcut icon" href="{{ url_for('static', filename='image/favicon.ico') }}">
 
     {% assets "home_css" %}
@@ -24,6 +24,59 @@
 
   </head>
   <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <a class="navbar-brand" href={{url_for('home')}}>Nextagram</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link" href={{url_for('home')}}>Home <span class="sr-only">(current)</span></a>
+              </li>
+              {% if not current_user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href={{url_for('sessions.sign_in')}}>Sign in</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={{url_for('users.new')}}>Sign up</a>
+                </li>
+              {% endif %}
+              {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href={{url_for('users.display', username=current_user.username)}}>Users</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={{url_for('users.edit', id=current_user.id)}}>Edit Account</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={{url_for('users.show', username=current_user.username)}}>Profile</a>
+                </li>
+              {% endif %}
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <form action={{url_for('sessions.logout')}} method="POST">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <button type="submit">Log Out</button>
+            </form>
+          </div>
+        </nav>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class=flashes>
+            {% for category, message in messages %}
+              <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+              </div>
+          {% endif %}
+        {% endwith %}
+
     {% block content %}
     {% endblock %}
     <footer>
